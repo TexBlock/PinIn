@@ -1,5 +1,6 @@
 plugins {
     id 'com.github.johnrengelman.shadow' version '6.1.0'
+    id 'maven-publish'
     id 'java'
 }
 
@@ -60,4 +61,27 @@ dependencies {
 compileJava   {
     sourceCompatibility = '1.8'
     targetCompatibility = '1.8'
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            groupId = "me.texblock"
+            artifactId = project.name.toLowerCase()
+
+            from components.java
+        }
+    }
+
+    repositories {
+        maven {
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/texblock/PinIn")
+
+            credentials {
+                username = project.findProperty("gpr.user") ?: System.getenv("GITHUB_ACTOR")
+                password = project.findProperty("gpr.key") ?: System.getenv("GITHUB_TOKEN")
+            }
+        }
+    }
 }
